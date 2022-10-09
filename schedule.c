@@ -15,6 +15,13 @@
 #define DELAY_TIME 5
 #define FIVE_SECONDS 5
 
+struct schedule_item
+{
+  int time ;
+  char * filename ;
+  int received ;
+} schedule_item ;
+
 static struct schedule_list * schedule ;
 static struct schedule_list * front ;
 static int current_time = 0 ;

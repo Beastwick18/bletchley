@@ -11,14 +11,6 @@
 #define MAX_TIME_DIGITS 20
 
 
-
-struct schedule_item 
-{
-  int time ;
-  char * filename ;
-  int received ; 
-} schedule_item ;
-
 struct schedule_list
 {
   struct schedule_item * message ;

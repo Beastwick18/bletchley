@@ -35,20 +35,22 @@ char *_encrypt( const char *data, const char *key, const char *iv, int *length )
     return NULL ;
   }
 
-  EVP_CIPHER_CTX ctx ;
+  EVP_CIPHER_CTX *ctx ;
+  ctx = EVP_CIPHER_CTX_new();
+
   int i, cipher_length, final_length ;
   unsigned char *ciphertext ;
 
-  EVP_CIPHER_CTX_init( &ctx ) ;
-  EVP_EncryptInit_ex( &ctx, cipher, NULL, ( unsigned char * )key, ( unsigned char * )iv ) ;
+  EVP_CIPHER_CTX_init( ctx ) ;
+  EVP_EncryptInit_ex( ctx, cipher, NULL, ( unsigned char * )key, ( unsigned char * )iv ) ;
 
   cipher_length = data_length + EVP_MAX_BLOCK_LENGTH ;
   ciphertext    = ( unsigned char * )malloc( cipher_length ) ;
 
-  EVP_EncryptUpdate( &ctx, ciphertext, &cipher_length, ( unsigned char * )data, data_length ) ;
-  EVP_EncryptFinal_ex( &ctx, ciphertext + cipher_length, &final_length ) ;
+  EVP_EncryptUpdate( ctx, ciphertext, &cipher_length, ( unsigned char * )data, data_length ) ;
+  EVP_EncryptFinal_ex( ctx, ciphertext + cipher_length, &final_length ) ;
 
-  EVP_CIPHER_CTX_cleanup( &ctx ) ;
+  EVP_CIPHER_CTX_cleanup( ctx ) ;
 
   *length = cipher_length + final_length ;
 
@@ -82,10 +84,11 @@ char *_decrypt( const char *data, int data_length, const char *key, const char *
   memcpy( datax, data, data_length ) ;
   datax_length = data_length ;
 
-  EVP_CIPHER_CTX ctx ;
+  EVP_CIPHER_CTX * ctx ;
+  ctx = EVP_CIPHER_CTX_new() ;
 
-  EVP_CIPHER_CTX_init( &ctx ) ;
-  EVP_DecryptInit_ex( &ctx, cipher, NULL, ( unsigned char * )key, ( unsigned char * )iv ) ;
+  EVP_CIPHER_CTX_init( ctx ) ;
+  EVP_DecryptInit_ex( ctx, cipher, NULL, ( unsigned char * )key, ( unsigned char * )iv ) ;
 
   int plain_length, final_length ;
   unsigned char *plaintext ;
@@ -93,15 +96,15 @@ char *_decrypt( const char *data, int data_length, const char *key, const char *
   plain_length = datax_length ;
   plaintext = ( unsigned char * )malloc( plain_length + 1 ) ;
 
-  EVP_DecryptUpdate( &ctx, plaintext, &plain_length, ( unsigned char * )datax, datax_length ) ;
-  EVP_DecryptFinal_ex( &ctx, plaintext + plain_length, &final_length ) ;
+  EVP_DecryptUpdate( ctx, plaintext, &plain_length, ( unsigned char * )datax, datax_length ) ;
+  EVP_DecryptFinal_ex( ctx, plaintext + plain_length, &final_length ) ;
 
   *length = plain_length + final_length ;
   plaintext[ *length ] = '\0' ;
 
   free( datax ) ;
 
-  EVP_CIPHER_CTX_cleanup( &ctx ) ;
+  EVP_CIPHER_CTX_cleanup( ctx ) ;
 
   return plaintext ;
 }
