@@ -1,5 +1,5 @@
 decrypt: main.o crypto.o clock.o schedule.o
-	gcc main.o crypto.o clock.o schedule.o -lpthread -lcrypto -g -o decrypt
+	gcc main.o crypto.o clock.o schedule.o -lpthread -lcrypto -g -o decrypt --std=c99
     
 main.o: main.c
 	gcc -c main.c -o main.o
