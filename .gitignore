@@ -1,5 +1,4 @@
 a.out
-ciphertext/*
 results/*
 utilities/generate_ciphertext
 utilities/mass_decrypt
