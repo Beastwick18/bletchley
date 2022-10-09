@@ -117,7 +117,7 @@ int main( int argc, char * argv[] )
     if ( sigaction( SIGUSR2, &act, NULL ) < 0 )  
     {
       perror ( "sigaction: " ) ;
-      return ;
+      return 0;
     }
 
     initializeClock( ONE_SECOND ) ;

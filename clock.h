@@ -28,4 +28,8 @@ int initializeClock( int interval ) ;
 
 void registerWithClock(  void * ( * tick ) ( void ) ) ;
 
+void startClock( ) ;
+
+void stopClock( ) ;
+
 #endif

@@ -14,7 +14,7 @@ static char key[17] =
 static char ivec[17] =
     "\xaa\xbb\x45\xd4\xaa\xbb\x45\xd4\xaa\xbb\x45\xd4\xaa\xbb\x45\xd4\x0" ;
 
-char *encrypt( const char *data, const char *key, const char *iv, int *length )
+char *_encrypt( const char *data, const char *key, const char *iv, int *length )
 {
   int key_length, iv_length, data_length ;
 
@@ -55,7 +55,7 @@ char *encrypt( const char *data, const char *key, const char *iv, int *length )
   return ciphertext ;
 }
 
-char *decrypt( const char *data, int data_length, const char *key, const char *iv, int * length )
+char *_decrypt( const char *data, int data_length, const char *key, const char *iv, int * length )
 {
   int key_length, iv_length ;
 
@@ -142,7 +142,7 @@ int encryptFile( char * input_filename, char * output_filename  )
     fclose( ifp ) ;
   }
 
-  encrypted = encrypt( data, key, ivec, &enc_length ) ;
+  encrypted = _encrypt( data, key, ivec, &enc_length ) ;
 
   FILE *ofp = fopen( output_filename, "w") ;
   if (ofp != NULL) 
@@ -194,7 +194,7 @@ int decryptFile( char * input_filename, char * output_filename  )
   }
 
   int length ;
-  decrypted = decrypt( data, bufsize, key, ivec, &length ) ;
+  decrypted = _decrypt( data, bufsize, key, ivec, &length ) ;
 
   FILE *ofp = fopen( output_filename, "w") ;
   if (ofp != NULL) 
