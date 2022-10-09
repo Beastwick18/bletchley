@@ -17,7 +17,7 @@ static int count ;
 static int running = 1 ;
 
 pthread_t message_receiver_tid ;
-pthread_t decryptor_tid ;
+pthread_t decryptor_tid[ MAX_NUM_THREADS ] ;
 
 static void handleSIGUSR2( int sig )
 {
@@ -45,7 +45,6 @@ int removeMessage( char *message )
 
 static void * tick ( void ) 
 {
-   printf("Tick!\n") ;
    return NULL ;
 }
 
@@ -64,7 +63,7 @@ void * receiver_thread( void * args )
 
 void * decryptor_thread( void * args )
 {
-  sleep(6);
+  sleep(10);
   while( running )
   {
     char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
@@ -95,6 +94,11 @@ void * decryptor_thread( void * args )
 
 int main( int argc, char * argv[] )
 {
+    if( argc != 2 )
+    {
+      printf("Usage: ./a.out [number of threads]\n") ;
+    }
+    int num_threads = atoi( argv[1] ) ;
     pthread_t tid[ MAX_NUM_THREADS ] ;
 
     // initialize the message buffer
@@ -123,7 +127,10 @@ int main( int argc, char * argv[] )
 
     pthread_create( &message_receiver_tid, NULL, receiver_thread, NULL ) ;
 
-    pthread_create( & decryptor_tid, NULL, decryptor_thread, NULL ) ;
+    for( i = 0; i < num_threads; i++ )
+    {
+      pthread_create( & decryptor_tid[i], NULL, decryptor_thread, NULL ) ;
+    }
 
     startClock( ) ;
 
@@ -132,6 +139,11 @@ int main( int argc, char * argv[] )
     stopClock( ) ;
 
     pthread_join( message_receiver_tid, NULL ) ;
+
+    for( i = 0; i < num_threads; i++ )
+    {
+      pthread_join( decryptor_tid[i], NULL ) ;
+    }
 
     for( i = 0; i < BUFFER_SIZE; i++ )
     {
