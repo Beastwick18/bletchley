@@ -83,23 +83,21 @@ void registerWithClock( void * ( * tick ) ( void ) )
     // Add a new entry to the list of partificpants wanting
     // to be notified
     struct notify_list * list = participants_head ;
-    if( participants_head == NULL )
-    {
-      struct notify_list * new_entry = ( struct notify_list * ) malloc( sizeof( struct notify_list ) ) ;
-      new_entry -> tick = tick ;
-      new_entry -> next = NULL;
-      participants_head = new_entry;
-      return ;  
-    }
-
-    while( list && list->next != NULL ) 
-    {
-        list = list -> next ;
-    }
-
     struct notify_list * new_entry = ( struct notify_list * ) malloc( sizeof( struct notify_list ) ) ;
     new_entry -> tick = tick ;
     new_entry -> next = NULL;
-    list = new_entry;
+
+    if( participants_head == NULL )
+    {
+      participants_head = new_entry;
+    }
+    else 
+    {
+      while( list && list->next != NULL ) 
+      {
+        list = list -> next ;
+      }
+      list = new_entry;
+    }
     return ;  
 }

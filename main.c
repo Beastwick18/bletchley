@@ -60,6 +60,7 @@ int main( int argc, char * argv[] )
     startClock( ) ;
     stopClock( ) ;
 
+    initializeSchedule( "schedule.txt" ) ;
     for( i = 0; i < BUFFER_SIZE; i++ )
     {
         free( message_buffer[i] ) ;
