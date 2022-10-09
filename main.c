@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "clock.h"
 
 #define MAX_NUM_THREADS 10 
 #define MAX_FILENAME_LENGTH 255
@@ -12,7 +13,9 @@
 char * message_buffer[BUFFER_SIZE];
 int count ;
 
-int insert_message( char * message )
+
+
+int insertMessage( char * message )
 {
   assert( count < BUFFER_SIZE && "Tried to add a message to a full buffer");
 
@@ -22,7 +25,7 @@ int insert_message( char * message )
   return 0;
 }
 
-int remove_message( char *message )
+int removeMessage( char *message )
 {
   assert( count && "Tried to remove a message from an empty buffer");
   strncpy( message, message_buffer[count], MAX_FILENAME_LENGTH ); 
@@ -31,6 +34,11 @@ int remove_message( char *message )
   return 0;
 }
 
+void * tick ( void ) 
+{
+   printf("Tick!\n") ;
+   return NULL ;
+}
 
 int main( int argc, char * argv[] )
 {
@@ -46,7 +54,16 @@ int main( int argc, char * argv[] )
 
     count = 0 ;
 
+    initializeClock( ONE_SECOND ) ;
+    registerWithClock( tick ) ;
 
+    startClock( ) ;
+    stopClock( ) ;
+
+    for( i = 0; i < BUFFER_SIZE; i++ )
+    {
+        free( message_buffer[i] ) ;
+    }
 
     return 0 ;
 }
