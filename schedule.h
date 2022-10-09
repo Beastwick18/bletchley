@@ -1,8 +1,8 @@
 #ifndef __SCHEDULE_H___
 #define __SCHEDULE_H___
 
-#define MAX_SCHEDULE_FILENAME_SIZE 10
-#define MAX_TIME_DIGITS 4
+#define MAX_SCHEDULE_FILENAME_SIZE 25
+#define MAX_TIME_DIGITS 20
 
 
 

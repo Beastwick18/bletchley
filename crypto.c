@@ -194,7 +194,6 @@ int decryptFile( char * input_filename, char * output_filename  )
   FILE *ofp = fopen( output_filename, "w") ;
   if (ofp != NULL) 
   {
-    printf("Writing %d bytes\n", length);
     fwrite( decrypted, sizeof( char ), length, ofp ) ;
   } 
   fclose( ofp ) ;

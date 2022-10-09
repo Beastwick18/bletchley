@@ -17,6 +17,7 @@ static int count ;
 static int running = 1 ;
 
 pthread_t message_receiver_tid ;
+pthread_t decryptor_tid ;
 
 static void handleSIGUSR2( int sig )
 {
@@ -27,7 +28,6 @@ static void handleSIGUSR2( int sig )
 int insertMessage( char * message )
 {
   assert( count < BUFFER_SIZE && "Tried to add a message to a full buffer");
-
   strncpy( message_buffer[count] , message, MAX_FILENAME_LENGTH ); 
   count++;
   
@@ -37,7 +37,7 @@ int insertMessage( char * message )
 int removeMessage( char *message )
 {
   assert( count && "Tried to remove a message from an empty buffer");
-  strncpy( message, message_buffer[count], MAX_FILENAME_LENGTH ); 
+  strncpy( message, message_buffer[count-1], MAX_FILENAME_LENGTH ); 
   count--;
 
   return 0;
@@ -64,9 +64,32 @@ void * receiver_thread( void * args )
 
 void * decryptor_thread( void * args )
 {
+  sleep(6);
   while( running )
   {
-    //decrypt files
+    char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+    char * output_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+    char * message = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+
+    memset( message,         0, MAX_FILENAME_LENGTH ) ;
+    memset( input_filename,  0, MAX_FILENAME_LENGTH ) ;
+    memset( output_filename, 0, MAX_FILENAME_LENGTH ) ;
+
+    removeMessage( message );
+
+    strncpy( input_filename, "ciphertext/", strlen( "ciphertext/" ) ) ;
+    strcat ( input_filename, message );
+
+    strncpy( output_filename, "results/", strlen( "results/" ) ) ;
+    strcat ( output_filename, message );
+    output_filename[ strlen( output_filename ) - 8 ] = '\0';
+    strcat ( output_filename, ".txt" );
+
+    decryptFile( input_filename, output_filename );
+
+    free( input_filename ) ;
+    free( output_filename ) ;
+    free( message ) ;
   }
 }
 
@@ -99,6 +122,8 @@ int main( int argc, char * argv[] )
     initializeSchedule( "schedule.txt" ) ;
 
     pthread_create( &message_receiver_tid, NULL, receiver_thread, NULL ) ;
+
+    pthread_create( & decryptor_tid, NULL, decryptor_thread, NULL ) ;
 
     startClock( ) ;
 
