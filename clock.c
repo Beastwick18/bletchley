@@ -5,16 +5,12 @@
 
 static pthread_t clock_tid ;
 static sigset_t signal_set ;
-static int clockNotRunning ;
 
 int interval = DEFAULT_INTERVAL ;
 struct notify_list * participants_head = NULL ;
 
 static void handleAlarm (int sig )
 {
-
-  if( clockNotRunning ) return;
-
   // Notify participants
   struct notify_list * list = participants_head ;
   while( list ) 
@@ -34,7 +30,6 @@ void * clock_thread ( void * args )
 int initializeClock( int _interval ) 
 {
   interval = _interval ;
-  clockNotRunning = 1 ;
 
   sigemptyset( & signal_set );
   sigaddset  ( & signal_set, SIGALRM );
@@ -59,15 +54,12 @@ void startClock ( )
   }
   alarm( ONE_SECOND ) ; 
 
-  clockNotRunning = 0 ;
-
   pthread_create( &clock_tid, NULL, clock_thread, NULL ) ;
 
 }
 
 void stopClock ( ) 
 {
-  clockNotRunning = 1 ;
   while( participants_head ) 
   {
     struct notify_list * entry = participants_head;
