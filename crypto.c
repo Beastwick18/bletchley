@@ -1,3 +1,8 @@
+// =======================================================
+//
+// Do not modify this file
+//
+// =======================================================
 #include <openssl/crypto.h>
 #include <openssl/evp.h>
 #include <assert.h>
