@@ -2,3 +2,4 @@ a.out
 utilities/generate_ciphertext
 utilities/mass_decrypt
 utilities/generate_sonnets
+*.o
