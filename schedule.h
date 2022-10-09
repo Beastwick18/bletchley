@@ -20,6 +20,8 @@ struct schedule_list
 
 int initializeSchedule( char * filename ) ;
 
+int freeSchedule( void ) ;
+
 int readSchedule( char * filename ) ;
 
 #endif

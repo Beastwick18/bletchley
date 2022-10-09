@@ -97,7 +97,7 @@ void registerWithClock( void * ( * tick ) ( void ) )
       {
         list = list -> next ;
       }
-      list = new_entry;
+      list -> next = new_entry;
     }
     return ;  
 }

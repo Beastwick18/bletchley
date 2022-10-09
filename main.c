@@ -10,8 +10,8 @@
 #define MAX_FILENAME_LENGTH 255
 #define BUFFER_SIZE 1
 
-char * message_buffer[BUFFER_SIZE];
-int count ;
+static char * message_buffer[BUFFER_SIZE];
+static int count ;
 
 
 
@@ -65,6 +65,6 @@ int main( int argc, char * argv[] )
     {
         free( message_buffer[i] ) ;
     }
-
+    freeSchedule( ) ;
     return 0 ;
 }
