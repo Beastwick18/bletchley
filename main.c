@@ -63,7 +63,6 @@ void * receiver_thread( void * args )
 
 void * decryptor_thread( void * args )
 {
-  sleep(10);
   while( running )
   {
     char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
