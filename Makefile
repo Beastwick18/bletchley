@@ -13,5 +13,9 @@ clock.o: clock.c
 schedule.o: schedule.c
 	gcc -c schedule.c -o schedule.o
    
+.PHONY: check clean
 clean:
 	rm decrypt results/* 
+
+check:
+	diff results/ plaintext/ -x .gitignore || true
