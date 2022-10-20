@@ -1,0 +1,189 @@
+==2457== Memcheck, a memory error detector
+==2457== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==2457== Using Valgrind-3.16.1-36d6727e1d-20200622X and LibVEX; rerun with -h for copyright info
+==2457== Command: ./decrypt 10
+==2457== Parent PID: 1
+==2457== 
+--2457-- 
+--2457-- Valgrind options:
+--2457--    --leak-check=full
+--2457--    --show-leak-kinds=all
+--2457--    --verbose
+--2457--    --log-file=val.txt
+--2457-- Contents of /proc/version:
+--2457--   Linux version 5.10.102.1-microsoft-standard-WSL2 (oe-user@oe-host) (x86_64-msft-linux-gcc (GCC) 9.3.0, GNU ld (GNU Binutils) 2.34.0.20200220) #1 SMP Wed Mar 2 00:30:59 UTC 2022
+--2457-- 
+--2457-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand
+--2457-- Page sizes: currently 4096, max supported 4096
+--2457-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--2457-- Reading syms from /home/cse3320/bletchley/decrypt
+--2457-- Reading syms from /lib/x86_64-linux-gnu/ld-2.31.so
+--2457--   Considering /usr/lib/debug/.build-id/e2/5570740d590e5cb7b1a20d86332a8d1bb3b65f.debug ..
+--2457--   .. build-id is valid
+--2457-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--2457--   Considering /usr/lib/debug/.build-id/54/299c4aec0e5e5f3d7b8135341351d0e1dbfc64.debug ..
+--2457--   .. build-id is valid
+--2457--    object doesn't have a dynamic symbol table
+--2457-- Scheduler: using generic scheduler lock implementation.
+--2457-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==2457== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-2457-by-???-on-928c73a0e945
+==2457== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-2457-by-???-on-928c73a0e945
+==2457== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-2457-by-???-on-928c73a0e945
+==2457== 
+==2457== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==2457== don't want to do, unless you know exactly what you're doing,
+==2457== or are doing some strange experiment):
+==2457==   /usr/bin/vgdb --pid=2457 ...command...
+==2457== 
+==2457== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==2457==   /path/to/gdb ./decrypt
+==2457== and then give GDB the following command
+==2457==   target remote | /usr/bin/vgdb --pid=2457
+==2457== --pid is optional if only one valgrind process is running
+==2457== 
+--2457-- REDIR: 0x401fa70 (ld-linux-x86-64.so.2:strlen) redirected to 0x580ca5f2 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--2457-- REDIR: 0x401f850 (ld-linux-x86-64.so.2:index) redirected to 0x580ca60c (vgPlain_amd64_linux_REDIR_FOR_index)
+--2457-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--2457--   Considering /usr/lib/debug/.build-id/f2/7641e081d3c37b410d7f31da4e2bf21040f356.debug ..
+--2457--   .. build-id is valid
+--2457-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--2457--   Considering /usr/lib/debug/.build-id/25/7cdcdf80e04f91ca9e3b185ee3b52995e89946.debug ..
+--2457--   .. build-id is valid
+==2457== WARNING: new redirection conflicts with existing -- ignoring it
+--2457--     old: 0x0401fa70 (strlen              ) R-> (0000.0) 0x580ca5f2 vgPlain_amd64_linux_REDIR_FOR_strlen
+--2457--     new: 0x0401fa70 (strlen              ) R-> (2007.0) 0x0483bda0 strlen
+--2457-- REDIR: 0x401c290 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483cc90 (strcmp)
+--2457-- REDIR: 0x401ffb0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4840740 (mempcpy)
+--2457-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.31.so
+--2457--   Considering /usr/lib/debug/.build-id/25/5e355c207aba91a59ae1f808e3b4da443abf0c.debug ..
+--2457--   .. build-id is valid
+--2457-- Reading syms from /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1
+--2457--    object doesn't have a symbol table
+--2457-- Reading syms from /lib/x86_64-linux-gnu/libc-2.31.so
+--2457--   Considering /usr/lib/debug/.build-id/81/4ca45fb917d1b757796ff5f456237c263711c7.debug ..
+--2457--   .. build-id is valid
+--2457-- Reading syms from /lib/x86_64-linux-gnu/libdl-2.31.so
+--2457--   Considering /usr/lib/debug/.build-id/46/b3bf3f9b9eb092a5c0cf5575e89092f768054c.debug ..
+--2457--   .. build-id is valid
+--2457-- REDIR: 0x4bee160 (libc.so.6:memmove) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed440 (libc.so.6:strncpy) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee630 (libc.so.6:strcasecmp) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4becb70 (libc.so.6:strcat) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed4d0 (libc.so.6:rindex) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4befa30 (libc.so.6:rawmemchr) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c07df0 (libc.so.6:wmemchr) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c07890 (libc.so.6:wcscmp) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee3a0 (libc.so.6:mempcpy) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee0d0 (libc.so.6:bcmp) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed390 (libc.so.6:strncmp) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4becc90 (libc.so.6:strcmp) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee290 (libc.so.6:memset) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c07810 (libc.so.6:wcschr) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed280 (libc.so.6:strnlen) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4becde0 (libc.so.6:strcspn) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee680 (libc.so.6:strncasecmp) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4becd50 (libc.so.6:strcpy) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee7d0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c09070 (libc.so.6:wcsnlen) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c07910 (libc.so.6:wcscpy) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed550 (libc.so.6:strpbrk) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4becc00 (libc.so.6:index) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed200 (libc.so.6:strlen) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bf3e10 (libc.so.6:memrchr) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee6d0 (libc.so.6:strcasecmp_l) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee050 (libc.so.6:memchr) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c079b0 (libc.so.6:wcslen) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bed7f0 (libc.so.6:strspn) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee5a0 (libc.so.6:stpncpy) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee510 (libc.so.6:stpcpy) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4befab0 (libc.so.6:strchrnul) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bee720 (libc.so.6:strncasecmp_l) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4c6c340 (libc.so.6:__memcpy_chk) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4bedf80 (libc.so.6:strstr) redirected to 0x482e1b0 (_vgnU_ifunc_wrapper)
+--2457-- REDIR: 0x4cc01f0 (libc.so.6:__strrchr_avx2) redirected to 0x483b7b0 (rindex)
+--2457-- REDIR: 0x4cc03c0 (libc.so.6:__strlen_avx2) redirected to 0x483bc80 (strlen)
+--2457-- REDIR: 0x4be90f0 (libc.so.6:malloc) redirected to 0x4838710 (malloc)
+--2457-- REDIR: 0x4cc37e0 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x483f650 (memset)
+--2457-- REDIR: 0x4bedc90 (libc.so.6:__GI_strstr) redirected to 0x4840990 (__strstr_sse2)
+--2457-- REDIR: 0x4cc1c20 (libc.so.6:__strncpy_avx2) redirected to 0x483bf70 (strncpy)
+--2457-- REDIR: 0x4be9720 (libc.so.6:free) redirected to 0x4839940 (free)
+--2457-- REDIR: 0x4be9e50 (libc.so.6:calloc) redirected to 0x483aab0 (calloc)
+--2457-- Reading syms from /lib/x86_64-linux-gnu/libgcc_s.so.1
+--2457--    object doesn't have a symbol table
+==2457== 
+==2457== Process terminating with default action of signal 2 (SIGINT)
+==2457==    at 0x48554A7: __pthread_clockjoin_ex (pthread_join_common.c:145)
+==2457==    by 0x10A8F1: main (in /home/cse3320/bletchley/decrypt)
+--2457-- Discarding syms at 0xb14e310-0xb15eb5d in /lib/x86_64-linux-gnu/libgcc_s.so.1 (have_dinfo 1)
+==2457== 
+==2457== HEAP SUMMARY:
+==2457==     in use at exit: 58,002 bytes in 633 blocks
+==2457==   total heap usage: 646 allocs, 13 frees, 65,653 bytes allocated
+==2457== 
+==2457== Searching for pointers to 633 not-freed blocks
+==2457== Checked 92,398,496 bytes
+==2457== 
+==2457== 272 bytes in 1 blocks are possibly lost in loss record 1 of 9
+==2457==    at 0x483AB65: calloc (vg_replace_malloc.c:760)
+==2457==    by 0x4012D16: allocate_dtv (dl-tls.c:343)
+==2457==    by 0x4012D16: _dl_allocate_tls (dl-tls.c:589)
+==2457==    by 0x4854B81: allocate_stack (allocatestack.c:622)
+==2457==    by 0x4854B81: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
+==2457==    by 0x10A879: main (in /home/cse3320/bletchley/decrypt)
+==2457== 
+==2457== 2,368 bytes in 148 blocks are still reachable in loss record 2 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10B32F: readSchedule (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x10B272: initializeSchedule (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x10A85C: main (in /home/cse3320/bletchley/decrypt)
+==2457== 
+==2457== 2,550 bytes in 10 blocks are still reachable in loss record 3 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10A59B: decryptor_thread (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x4853EA6: start_thread (pthread_create.c:477)
+==2457==    by 0x4C5EAEE: clone (clone.S:95)
+==2457== 
+==2457== 2,550 bytes in 10 blocks are still reachable in loss record 4 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10A5A9: decryptor_thread (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x4853EA6: start_thread (pthread_create.c:477)
+==2457==    by 0x4C5EAEE: clone (clone.S:95)
+==2457== 
+==2457== 2,550 bytes in 10 blocks are still reachable in loss record 5 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10A5B7: decryptor_thread (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x4853EA6: start_thread (pthread_create.c:477)
+==2457==    by 0x4C5EAEE: clone (clone.S:95)
+==2457== 
+==2457== 2,720 bytes in 10 blocks are possibly lost in loss record 6 of 9
+==2457==    at 0x483AB65: calloc (vg_replace_malloc.c:760)
+==2457==    by 0x4012D16: allocate_dtv (dl-tls.c:343)
+==2457==    by 0x4012D16: _dl_allocate_tls (dl-tls.c:589)
+==2457==    by 0x4854B81: allocate_stack (allocatestack.c:622)
+==2457==    by 0x4854B81: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
+==2457==    by 0x10A8B2: main (in /home/cse3320/bletchley/decrypt)
+==2457== 
+==2457== 3,552 bytes in 148 blocks are still reachable in loss record 7 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10B321: readSchedule (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x10B272: initializeSchedule (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x10A85C: main (in /home/cse3320/bletchley/decrypt)
+==2457== 
+==2457== 3,700 bytes in 148 blocks are still reachable in loss record 8 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10B33D: readSchedule (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x10B272: initializeSchedule (in /home/cse3320/bletchley/decrypt)
+==2457==    by 0x10A85C: main (in /home/cse3320/bletchley/decrypt)
+==2457== 
+==2457== 37,740 bytes in 148 blocks are still reachable in loss record 9 of 9
+==2457==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+==2457==    by 0x10A7AE: main (in /home/cse3320/bletchley/decrypt)
+==2457== 
+==2457== LEAK SUMMARY:
+==2457==    definitely lost: 0 bytes in 0 blocks
+==2457==    indirectly lost: 0 bytes in 0 blocks
+==2457==      possibly lost: 2,992 bytes in 11 blocks
+==2457==    still reachable: 55,010 bytes in 622 blocks
+==2457==         suppressed: 0 bytes in 0 blocks
+==2457== 
+==2457== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

@@ -92,7 +92,10 @@ void registerWithClock( void * ( * tick ) ( void ) )
     {
       while( list && list->next != NULL ) 
       {
+        struct notify_list * x = list;
+        
         list = list -> next ;
+        free(x);
       }
       list -> next = new_entry;
     }
