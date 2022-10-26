@@ -39,11 +39,11 @@ int insertMessage( char * message )
   
   assert( count < BUFFER_SIZE && "Tried to add a message to a full buffer");
   strncpy( message_buffer[count] , message, MAX_FILENAME_LENGTH ); 
-  sem_post(&full_sem);
   count++;
   
   // Increment emtpy_sem, which makes any decryptor threads that are
   pthread_mutex_unlock(&buffer_mutex);
+  sem_post(&full_sem);
 
 
   return 0;
@@ -58,11 +58,11 @@ int removeMessage( char *message )
 
   assert( count && "Tried to remove a message from an empty buffer");
   strncpy( message, message_buffer[count-1], MAX_FILENAME_LENGTH ); 
-  sem_post(&empty_sem);
   count--;
 
   // Increment full_sem, which makes any receiver threads that are
   pthread_mutex_unlock(&buffer_mutex);
+  sem_post(&empty_sem);
 
   return 0;
 }

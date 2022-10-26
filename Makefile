@@ -15,3 +15,6 @@ schedule.o: schedule.c
    
 clean:
 	rm *.o decrypt results/* 
+
+check:
+	diff results/ plaintext/ -x .gitignore

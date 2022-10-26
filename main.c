@@ -20,9 +20,9 @@ static int running = 1 ;
 pthread_t message_receiver_tid ;
 pthread_t decryptor_tid[ MAX_NUM_THREADS ] ;
 
-static pthread_mutex_t buffer_mutex;
-static sem_t empty_sem;
+static pthread_mutex_t mutex;
 static sem_t full_sem;
+static sem_t empty_sem;
 
 static void handleSIGUSR2( int sig )
 {
@@ -32,30 +32,40 @@ static void handleSIGUSR2( int sig )
 
 int insertMessage( char * message )
 {
-  sem_wait(&empty_sem);
-  pthread_mutex_lock(&buffer_mutex);
+  // Wait for buffer to no longer be full, and for
+  // the buffer to be unlocked
+  sem_wait(&full_sem);
+  pthread_mutex_lock(&mutex);
 
   assert( count < BUFFER_SIZE && "Tried to add a message to a full buffer");
   strncpy( message_buffer[count] , message, MAX_FILENAME_LENGTH ); 
   count++;
 
-  pthread_mutex_unlock(&buffer_mutex);
-  sem_post(&full_sem);
+  // Post emtpy_sem, which makes any decryptor threads that are
+  // waiting for buffer to no longer be empty to stop blocking.
+  // Also unlock buffer mutex so another thread can modify it.
+  pthread_mutex_unlock(&mutex);
+  sem_post(&empty_sem);
   
   return 0;
 }
 
 int removeMessage( char *message )
 {
-  sem_wait(&full_sem);
-  pthread_mutex_lock(&buffer_mutex);
+  // Wait for buffer to no longer be empty, and for
+  // the buffer to be unlocked
+  sem_wait(&empty_sem);
+  pthread_mutex_lock(&mutex);
 
   assert( count && "Tried to remove a message from an empty buffer");
   strncpy( message, message_buffer[count-1], MAX_FILENAME_LENGTH ); 
   count--;
 
-  pthread_mutex_unlock(&buffer_mutex);
-  sem_post(&empty_sem);
+  // Post full_sem, which makes any receiver threads that are
+  // waiting for buffer to no longer be full to stop blocking.
+  // Also unlock buffer mutex so another thread can modify it.
+  pthread_mutex_unlock(&mutex);
+  sem_post(&full_sem);
 
   return 0;
 }
@@ -81,12 +91,11 @@ void * receiver_thread( void * args )
 
 void * decryptor_thread( void * args )
 {
+  char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+  char * output_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+  char * message = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
   while( running )
   {
-    char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
-    char * output_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
-    char * message = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
-
     memset( message,         0, MAX_FILENAME_LENGTH ) ;
     memset( input_filename,  0, MAX_FILENAME_LENGTH ) ;
     memset( output_filename, 0, MAX_FILENAME_LENGTH ) ;
@@ -102,11 +111,10 @@ void * decryptor_thread( void * args )
     strcat ( output_filename, ".txt" );
 
     decryptFile( input_filename, output_filename );
-
-    free( input_filename ) ;
-    free( output_filename ) ;
-    free( message ) ;
   }
+  free( input_filename ) ;
+  free( output_filename ) ;
+  free( message ) ;
   return NULL ;
 }
 
@@ -127,15 +135,21 @@ int main( int argc, char * argv[] )
 
     count = 0 ;
     
-    if(pthread_mutex_init(&buffer_mutex, NULL) != 0) {
+    // Create mutex for message_buffer and count to prevent sequential
+    // modification.
+    if(pthread_mutex_init(&mutex, NULL) != 0) {
       fprintf(stderr, "Couldn't create mutex");
       return EXIT_FAILURE;
     }
-    if(sem_init(&empty_sem, 0, BUFFER_SIZE) != 0) {
+    // Create semaphore for blocking decryptor threads while buffer is
+    // empty
+    if(sem_init(&full_sem, 0, BUFFER_SIZE) != 0) {
       fprintf(stderr, "Couldn't create semaphore");
       return EXIT_FAILURE;
     }
-    if(sem_init(&full_sem, 0, 0) != 0) {
+    // Create semaphore for blocking receiver threads while buffer is
+    // full
+    if(sem_init(&empty_sem, 0, 0) != 0) {
       fprintf(stderr, "Couldn't create semaphore");
       return EXIT_FAILURE;
     }
@@ -174,9 +188,9 @@ int main( int argc, char * argv[] )
     }
     freeSchedule( ) ;
     
-    pthread_mutex_destroy(&buffer_mutex);
-    sem_destroy(&empty_sem);
+    pthread_mutex_destroy(&mutex);
     sem_destroy(&full_sem);
+    sem_destroy(&empty_sem);
 
     return 0 ;
 }
