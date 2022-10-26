@@ -11,7 +11,7 @@
 
 #define MAX_NUM_THREADS 1024 
 #define MAX_FILENAME_LENGTH 255
-#define BUFFER_SIZE 6
+#define BUFFER_SIZE 148
 
 static char * message_buffer[BUFFER_SIZE];
 static int count ;
@@ -32,30 +32,37 @@ static void handleSIGUSR2( int sig )
 
 int insertMessage( char * message )
 {
+  // Wait for buffer to no longer be full, and for
+  // the buffer to be unlocked
   sem_wait(&empty_sem);
   pthread_mutex_lock(&buffer_mutex);
-
+  
   assert( count < BUFFER_SIZE && "Tried to add a message to a full buffer");
   strncpy( message_buffer[count] , message, MAX_FILENAME_LENGTH ); 
-  count++;
-
-  pthread_mutex_unlock(&buffer_mutex);
   sem_post(&full_sem);
+  count++;
   
+  // Increment emtpy_sem, which makes any decryptor threads that are
+  pthread_mutex_unlock(&buffer_mutex);
+
+
   return 0;
 }
 
 int removeMessage( char *message )
 {
+  // Wait for buffer to no longer be empty, and for
+  // the buffer to be unlocked
   sem_wait(&full_sem);
   pthread_mutex_lock(&buffer_mutex);
 
   assert( count && "Tried to remove a message from an empty buffer");
   strncpy( message, message_buffer[count-1], MAX_FILENAME_LENGTH ); 
+  sem_post(&empty_sem);
   count--;
 
+  // Increment full_sem, which makes any receiver threads that are
   pthread_mutex_unlock(&buffer_mutex);
-  sem_post(&empty_sem);
 
   return 0;
 }
@@ -76,38 +83,37 @@ void * receiver_thread( void * args )
       insertMessage( message_file ) ;
     }
   }
-  return NULL;
 }
 
 void * decryptor_thread( void * args )
 {
+  char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+  char * output_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+  char * message = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
+
   while( running )
   {
-    char * input_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
-    char * output_filename  = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
-    char * message = ( char * ) malloc ( sizeof( char ) * MAX_FILENAME_LENGTH ) ;
-
     memset( message,         0, MAX_FILENAME_LENGTH ) ;
     memset( input_filename,  0, MAX_FILENAME_LENGTH ) ;
     memset( output_filename, 0, MAX_FILENAME_LENGTH ) ;
 
-    removeMessage( message );
+    if(removeMessage( message ) == -1)
+      break;
 
-    strncpy( input_filename, "ciphertext/", strlen( "ciphertext/" )+1 ) ;
+    strncpy( input_filename, "ciphertext/", strlen( "ciphertext/" ) ) ;
     strcat ( input_filename, message );
 
-    strncpy( output_filename, "results/", strlen( "results/" )+1 ) ;
+    strncpy( output_filename, "results/", strlen( "results/" ) ) ;
     strcat ( output_filename, message );
     output_filename[ strlen( output_filename ) - 8 ] = '\0';
     strcat ( output_filename, ".txt" );
 
     decryptFile( input_filename, output_filename );
-
-    free( input_filename ) ;
-    free( output_filename ) ;
-    free( message ) ;
   }
-  return NULL ;
+
+  free( input_filename ) ;
+  free( output_filename ) ;
+  free( message ) ;
 }
 
 int main( int argc, char * argv[] )
@@ -115,18 +121,12 @@ int main( int argc, char * argv[] )
     if( argc != 2 )
     {
       printf("Usage: ./a.out [number of threads]\n") ;
+      return 0;
     }
     int num_threads = atoi( argv[1] ) ;
+    pthread_t tid[ MAX_NUM_THREADS ] ;
 
-    // initialize the message buffer
-    int i ;
-    for( i = 0; i < BUFFER_SIZE; i++ )
-    {
-        message_buffer[i] = ( char * ) malloc( MAX_FILENAME_LENGTH ) ;
-    }
-
-    count = 0 ;
-    
+    // Create mutex for message_buffer to prevent sequential
     if(pthread_mutex_init(&buffer_mutex, NULL) != 0) {
       fprintf(stderr, "Couldn't create mutex");
       return EXIT_FAILURE;
@@ -139,6 +139,15 @@ int main( int argc, char * argv[] )
       fprintf(stderr, "Couldn't create semaphore");
       return EXIT_FAILURE;
     }
+    
+    // initialize the message buffer
+    int i ;
+    for( i = 0; i < BUFFER_SIZE; i++ )
+    {
+      message_buffer[i] = ( char * ) malloc( MAX_FILENAME_LENGTH ) ;
+    }
+
+    count = 0 ;
 
     struct sigaction act;
     memset ( & act, '\0', sizeof( act ) ) ;
@@ -168,15 +177,21 @@ int main( int argc, char * argv[] )
 
     stopClock( ) ;
 
+    pthread_join( message_receiver_tid, NULL ) ;
+
+    for( i = 0; i < num_threads; i++ )
+    {
+      pthread_join( decryptor_tid[i], NULL ) ;
+    }
+
     for( i = 0; i < BUFFER_SIZE; i++ )
     {
-        free( message_buffer[i] ) ;
+      free( message_buffer[i] ) ;
     }
-    freeSchedule( ) ;
-    
     pthread_mutex_destroy(&buffer_mutex);
     sem_destroy(&empty_sem);
     sem_destroy(&full_sem);
+    // sem_destroy(&full_sem);
 
     return 0 ;
 }

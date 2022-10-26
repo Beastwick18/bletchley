@@ -1,21 +1,17 @@
 decrypt: main.o crypto.o clock.o schedule.o
-	gcc main.o crypto.o clock.o schedule.o -lpthread -lcrypto -g -o decrypt --std=c99
+	gcc -g main.o crypto.o clock.o schedule.o -lpthread -lcrypto -g -o decrypt --std=c99
     
 main.o: main.c
-	gcc -c main.c -o main.o
+	gcc -D_POSIX_C_SOURCE -Wall -g -c main.c -o main.o
     
 crypto.o: crypto.c
-	gcc -c crypto.c -o crypto.o
+	gcc -D_POSIX_C_SOURCE -Wall -g -c crypto.c -o crypto.o
     
 clock.o: clock.c
-	gcc -c clock.c -o clock.o
+	gcc -D_POSIX_C_SOURCE -Wall -g -c clock.c -o clock.o
     
 schedule.o: schedule.c
-	gcc -c schedule.c -o schedule.o
+	gcc -D_POSIX_C_SOURCE -Wall -g -c schedule.c -o schedule.o
    
-.PHONY: check clean
 clean:
-	rm decrypt results/* 
-
-check:
-	diff results/ plaintext/ -x .gitignore || true
+	rm *.o decrypt results/* 

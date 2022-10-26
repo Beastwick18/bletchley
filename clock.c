@@ -30,6 +30,7 @@ void * clock_thread ( void * args )
 {
   int sig;
   sigwait( & signal_set, & sig );
+  return NULL;
 }
 
 int initializeClock( int _interval ) 
@@ -39,6 +40,7 @@ int initializeClock( int _interval )
   sigemptyset( & signal_set );
   sigaddset  ( & signal_set, SIGALRM );
 
+  return 0;
 }
 
 void startClock ( ) 
@@ -92,10 +94,7 @@ void registerWithClock( void * ( * tick ) ( void ) )
     {
       while( list && list->next != NULL ) 
       {
-        struct notify_list * x = list;
-        
         list = list -> next ;
-        free(x);
       }
       list -> next = new_entry;
     }

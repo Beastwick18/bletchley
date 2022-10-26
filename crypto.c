@@ -14,7 +14,7 @@ static char key[17] =
 static char ivec[17] =
     "\xaa\xbb\x45\xd4\xaa\xbb\x45\xd4\xaa\xbb\x45\xd4\xaa\xbb\x45\xd4\x0" ;
 
-char *_encrypt( const char *data, const char *key, const char *iv, int *length )
+unsigned char *_encrypt( const char *data, const char *key, const char *iv, int *length )
 {
   int key_length, iv_length, data_length ;
 
@@ -38,7 +38,7 @@ char *_encrypt( const char *data, const char *key, const char *iv, int *length )
   EVP_CIPHER_CTX *ctx ;
   ctx = EVP_CIPHER_CTX_new();
 
-  int i, cipher_length, final_length ;
+  int cipher_length, final_length ;
   unsigned char *ciphertext ;
 
   EVP_CIPHER_CTX_init( ctx ) ;
@@ -57,7 +57,7 @@ char *_encrypt( const char *data, const char *key, const char *iv, int *length )
   return ciphertext ;
 }
 
-char *_decrypt( const char *data, int data_length, const char *key, const char *iv, int * length )
+unsigned char *_decrypt( const char *data, int data_length, const char *key, const char *iv, int * length )
 {
   int key_length, iv_length ;
 
@@ -76,9 +76,8 @@ char *_decrypt( const char *data, int data_length, const char *key, const char *
     return NULL ;
   }
 
-  const char *p ;
   char *datax ;
-  int i, datax_length ;
+  int datax_length ;
 
   datax = ( char * )malloc( data_length ) ;
   memcpy( datax, data, data_length ) ;
@@ -112,8 +111,8 @@ char *_decrypt( const char *data, int data_length, const char *key, const char *
 int encryptFile( char * input_filename, char * output_filename  )
 {
   char *data ;
-  char *encrypted, *decrypted ;
-  int enc_length, i, bufsize ;
+  unsigned char *encrypted ;
+  int enc_length, bufsize ;
 
   FILE *ifp = fopen( input_filename, "r") ;
   if ( ifp != NULL ) 
@@ -162,9 +161,9 @@ int encryptFile( char * input_filename, char * output_filename  )
 
 int decryptFile( char * input_filename, char * output_filename  )
 {
-  char *data ;
-  char *decrypted ;
-  int enc_length, i, bufsize ;
+  char *data = NULL ;
+  unsigned char *decrypted ;
+  int bufsize ;
 
   FILE *ifp = fopen( input_filename, "rb") ;
   if ( ifp != NULL ) 
